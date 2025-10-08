@@ -29,3 +29,20 @@ export async function resolveMatches(
   const data: ResolveMatchesResponse = await r.json();
   return data;
 }
+export interface ResolveMatchesResponse {
+  regionGuess: string | null;
+  puuid: string | null;
+  matchIds: string[];
+}
+
+export interface MatchBundle {
+  match: Record<string, unknown>;
+  timeline: Record<string, unknown> | null;
+  region: string;
+}
+export async function loadMatch(matchId: string): Promise<MatchBundle> {
+  const r = await fetch(`http://localhost:5050/api/match/${matchId}`);
+  if (!r.ok) throw new Error("Failed to load match");
+  const data: MatchBundle = await r.json();
+  return data;
+}

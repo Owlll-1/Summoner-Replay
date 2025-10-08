@@ -82,6 +82,25 @@ app.get("/api/matches/resolve", async (req, res) => {
   } catch (e: any) {
     res.status(500).json({ error: "Lookup failed", detail: String(e.message || e) });
   }
+  // GET /api/match/:matchId -> returns match, timeline (if available), and region
+  app.get("/api/match/:matchId", async (req, res) => {
+  try {
+    const { matchId } = req.params;
+    const region =
+      matchIdToRegion(matchId) ?? "americas"; // fallback if unknown
+
+    const match = await riot(region, `/lol/match/v5/matches/${matchId}`);
+    let timeline: any = null;
+    try {
+      timeline = await riot(region, `/lol/match/v5/matches/${matchId}/timeline`);
+    } catch {
+      timeline = null; // some matches don’t have timelines
+    }
+    res.json({ match, timeline, region });
+  } catch (e: any) {
+    res.status(500).json({ error: "Match fetch failed", detail: String(e.message || e) });
+  }
+});
 });
 
 const PORT = process.env.PORT || 5050;
