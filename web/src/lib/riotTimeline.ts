@@ -1,7 +1,14 @@
 export type Position = { x: number; y: number };
 export const MAP_SIZE = 14820; // SR world coords are ~0..14820 on both axes
+export interface RiotBuildingKillEvent extends RiotTimelineEventBase {
+  type: "BUILDING_KILL";
+  laneType?: string;
+  teamId?: number;
+  buildingType?: string;
+  towerType?: string;    
+}
 
-// ------- Match (subset) -------
+// Match (subset)
 export interface RiotMatchParticipant {
   participantId: number;
   summonerName?: string;
@@ -17,7 +24,7 @@ export interface RiotMatch {
   info?: RiotMatchInfo;
 }
 
-// ------- Timeline (subset) -------
+// Timeline (subset)
 export interface RiotParticipantFrame {
   // Some frames omit position (dead/recall/base), so it's optional.
   position?: Position;
@@ -30,6 +37,18 @@ export interface RiotTimelineEventBase {
   timestamp?: number;
   position?: Position;
 }
+export interface RiotBuildingKillEvent extends RiotTimelineEventBase {
+  type: "BUILDING_KILL";
+  laneType?: string;
+  teamId?: number;
+  buildingType?: string; // e.g., "TOWER_BUILDING", "INHIBITOR_BUILDING"
+  towerType?: string;    // e.g., "OUTER_TURRET", "INNER_TURRET", "BASE_TURRET"
+}
+
+// Small helper (type guard)
+function isBuildingKill(ev: RiotTimelineEventBase): ev is RiotBuildingKillEvent {
+  return ev.type === "BUILDING_KILL";
+} 
 
 export interface RiotChampKillEvent extends RiotTimelineEventBase {
   type: "CHAMPION_KILL";
@@ -69,7 +88,7 @@ export interface RiotTimeline {
   info?: RiotTimelineInfo;
 }
 
-// ------- Frontend-friendly, normalized types -------
+// Frontend-friendly, normalized types
 export type ParticipantLite = {
   participantId: number;
   summonerName: string;
@@ -86,12 +105,11 @@ export type Frame = {
 
 export type ReplayEvent =
   | { kind: "CHAMP_KILL"; t: number; x?: number; y?: number; killerId?: number; victimId?: number }
-  | { kind: "BUILDING_KILL"; t: number; x?: number; y?: number; lane?: string; teamId?: number }
+  | { kind: "BUILDING_KILL"; t: number; x?: number; y?: number; lane?: string; teamId?: number; buildingType?: string; towerType?: string } 
   | { kind: "ELITE_MONSTER_KILL"; t: number; x?: number; y?: number; monsterType?: string; killerId?: number };
 
-// ===================================================
+
 // Helpers (type-safe, no `any`)
-// ===================================================
 
 export function parseParticipants(match: RiotMatch): ParticipantLite[] {
   const arr = match.info?.participants ?? [];
@@ -176,6 +194,8 @@ export function extractEvents(timeline: RiotTimeline | null): ReplayEvent[] {
             y: toNumberOrUndef(eb.position?.y),
             lane: toStringOrUndef(eb.laneType),
             teamId: toNumberOrUndef(eb.teamId),
+            buildingType: toStringOrUndef(eb.buildingType),
+            towerType: toStringOrUndef(eb.towerType),
           });
           break;
         }
@@ -254,9 +274,7 @@ export function predictPosition(
   return { x: prev!.x + dx * scale, y: prev!.y + dy * scale };
 }
 
-// ===================================================
 // Small, typed utilities (no `any`)
-// ===================================================
 
 function isPosition(v: unknown): v is Position {
   if (

@@ -39,7 +39,7 @@ export default function App() {
         <div style={{ padding: 24 }}>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login />} />            
             { /* Protect it later by wrapping in <PrivateRoute> */}
             <Route
               path="/replay"

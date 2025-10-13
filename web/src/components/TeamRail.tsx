@@ -7,8 +7,8 @@ type Props = {
 };
 
 export default function TeamRail({ title, team, side }: Props) {
-  const ring = side === "blue" ? "#3B82F6" : "#EF4444"; // Tailwind blue-500/red-500
-  const accentBg = side === "blue" ? "rgba(59,130,246,0.08)" : "rgba(239,68,68,0.08)";
+  const ring = side === "blue" ? "#1868e9ff" : "#ca1212ff"; // Tailwind blue-500/red-500
+  const accentBg = side === "blue" ? "rgba(29, 111, 243, 1)" : "rgba(238, 30, 30, 1)";
 
   return (
     <aside
@@ -16,9 +16,9 @@ export default function TeamRail({ title, team, side }: Props) {
         display: "grid",
         gap: 8,
         padding: 12,
-        border: "1px solid #e5e7eb",
+        border: "1px solid #00040aff",
         borderRadius: 12,
-        background: "#fff",
+        background: "#fdfdfdff",
         minWidth: 260,
       }}
     >
@@ -36,7 +36,7 @@ export default function TeamRail({ title, team, side }: Props) {
               alignItems: "center",
               gap: 8,
               padding: "6px 8px",
-              border: "1px solid #f3f4f6",
+              border: "1px solid #000714ff",
               borderRadius: 10,
             }}
           >
@@ -52,6 +52,7 @@ export default function TeamRail({ title, team, side }: Props) {
                 placeItems: "center",
                 fontSize: 12,
                 fontWeight: 700,
+                color: "#111827",
                 background: "#fff",
               }}
             >
@@ -62,10 +63,10 @@ export default function TeamRail({ title, team, side }: Props) {
               <div style={{ fontWeight: 600, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
                 {p.summonerName}
               </div>
-              <div style={{ fontSize: 12, opacity: 0.8 }}>{p.championName}</div>
+              <div style={{ fontSize: 12, color: "#111827", opacity: 0.8 }}>{p.championName}</div>
             </div>
 
-            <div style={{ textAlign: "right", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+            <div style={{ textAlign: "right", color: "#111827", fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
               <span title="K/D/A">{p.kills}/{p.deaths}/{p.assists}</span>
             </div>
           </li>
