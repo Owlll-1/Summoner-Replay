@@ -5,7 +5,8 @@ export interface RiotBuildingKillEvent extends RiotTimelineEventBase {
   laneType?: string;
   teamId?: number;
   buildingType?: string;
-  towerType?: string;    
+  towerType?: string;
+  killerId?: number;      
 }
 
 // Match (subset)
@@ -45,10 +46,15 @@ export interface RiotBuildingKillEvent extends RiotTimelineEventBase {
   towerType?: string;    // e.g., "OUTER_TURRET", "INNER_TURRET", "BASE_TURRET"
 }
 
-// Small helper (type guard)
-function isBuildingKill(ev: RiotTimelineEventBase): ev is RiotBuildingKillEvent {
-  return ev.type === "BUILDING_KILL";
-} 
+/*
+ * Helper: Convert participant ID to team ID
+ * Participants 1-5 are team 100 (blue)
+ * Participants 6-10 are team 200 (red)
+ */
+function participantIdToTeamId(participantId?: number): 100 | 200 | undefined {
+  if (participantId === undefined || participantId === null) return undefined;
+  return participantId <= 5 ? 100 : 200;
+}
 
 export interface RiotChampKillEvent extends RiotTimelineEventBase {
   type: "CHAMPION_KILL";
@@ -104,9 +110,21 @@ export type Frame = {
 };
 
 export type ReplayEvent =
-  | { kind: "CHAMP_KILL"; t: number; x?: number; y?: number; killerId?: number; victimId?: number }
-  | { kind: "BUILDING_KILL"; t: number; x?: number; y?: number; lane?: string; teamId?: number; buildingType?: string; towerType?: string } 
-  | { kind: "ELITE_MONSTER_KILL"; t: number; x?: number; y?: number; monsterType?: string; killerId?: number };
+  | { kind: "CHAMP_KILL" | "BUILDING_KILL" | "ELITE_MONSTER_KILL";
+  t: number;
+  x?: number;
+  y?: number;
+  
+  killerId?: number;
+  victimId?: number;
+  teamId?: 100 | 200;
+  lane?: string;
+  buildingType?: string;
+  towerType?: string;
+  monsterType?: string;
+
+  killerTeamId?: 100 | 200;
+  };
 
 
 // Helpers (type-safe, no `any`)
@@ -175,39 +193,46 @@ export function extractEvents(timeline: RiotTimeline | null): ReplayEvent[] {
       switch (e.type) {
         case "CHAMPION_KILL": {
           const ek = e as RiotChampKillEvent;
+          const killerId = toNumberOrUndef(ek.killerId);
           out.push({
             kind: "CHAMP_KILL",
             t,
             x: toNumberOrUndef(ek.position?.x),
             y: toNumberOrUndef(ek.position?.y),
-            killerId: toNumberOrUndef(ek.killerId),
+            killerId,
             victimId: toNumberOrUndef(ek.victimId),
+            killerTeamId: participantIdToTeamId(killerId), 
           });
           break;
         }
         case "BUILDING_KILL": {
           const eb = e as RiotBuildingKillEvent;
+          const killerId = toNumberOrUndef(eb.killerId);
+          const rawteamId = toNumberOrUndef(eb.teamId); 
           out.push({
             kind: "BUILDING_KILL",
             t,
             x: toNumberOrUndef(eb.position?.x),
             y: toNumberOrUndef(eb.position?.y),
             lane: toStringOrUndef(eb.laneType),
-            teamId: toNumberOrUndef(eb.teamId),
+            teamId: rawteamId === 100 || rawteamId === 200 ? rawteamId : undefined,
             buildingType: toStringOrUndef(eb.buildingType),
             towerType: toStringOrUndef(eb.towerType),
+            killerTeamId: participantIdToTeamId(killerId), 
           });
           break;
         }
         case "ELITE_MONSTER_KILL": {
           const em = e as RiotEliteMonsterKillEvent;
+          const killerId = toNumberOrUndef(em.killerId);
           out.push({
             kind: "ELITE_MONSTER_KILL",
             t,
             x: toNumberOrUndef(em.position?.x),
             y: toNumberOrUndef(em.position?.y),
-            killerId: toNumberOrUndef(em.killerId),
+            killerId,
             monsterType: toStringOrUndef(em.monsterType),
+            killerTeamId: participantIdToTeamId(killerId), 
           });
           break;
         }
@@ -217,8 +242,8 @@ export function extractEvents(timeline: RiotTimeline | null): ReplayEvent[] {
       }
     }
   }
-
-  return out; // already chronological enough by frame order
+  
+  return out;
 }
 
 export function neighborFrames(frames: Frame[], t: number): { prev: Frame; next: Frame } | null {

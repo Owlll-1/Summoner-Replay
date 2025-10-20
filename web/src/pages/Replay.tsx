@@ -16,6 +16,7 @@ import MapCanvas from "../components/MapCanvas";
 import MapOverlay from "../components/MapOverlay";
 import EventBar from "../components/EventBar";
 import ObjectiveHUD from "../components/ObjectiveHUD";
+import EventBanner from "../components/EventBanner";
 
 // API
 import { loadMatch, type MatchBundle } from "../api";
@@ -256,6 +257,11 @@ export default function Replay() {
                   dragon={live.objectivesUp.dragon}
                   baron={live.objectivesUp.baron}
                   herald={live.objectivesUp.herald}
+                />
+                <EventBanner 
+                  events={events} 
+                  timeMs={timeMs}
+                  width={900}
                 />
               </div>
 
