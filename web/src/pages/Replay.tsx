@@ -233,7 +233,7 @@ export default function Replay() {
                 justifyItems: "center",
               }}
             >
-              <TeamRail title="Blue Team" team={teams.blue} side="blue" />
+              <TeamRail title="Blue Team" team={teams.blue} side="blue" events={events} timeMs={timeMs} />
 
               <div style={{
                  position: "relative", 
@@ -265,7 +265,7 @@ export default function Replay() {
                 />
               </div>
 
-              <TeamRail title="Red Team" team={teams.red} side="red" />
+              <TeamRail title="Red Team" team={teams.red} side="red" events={events} timeMs={timeMs} />
             </div>
           )}
 

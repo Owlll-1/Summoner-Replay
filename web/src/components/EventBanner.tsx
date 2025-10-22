@@ -49,15 +49,7 @@ export default function EventBanner({ events, timeMs }: Props) {
   // REF: Counter for generating unique banner IDs
   const nextIdRef = useRef<number>(1);
 
-  /**
-   * FUNCTION: createBanner
-   * Creates a new banner object and adds it to the active list
-   * 
-   * @param type - Banner category
-   * @param teamId - Team color (100=blue, 200=red)
-   * @param text - Main message
-   * @param subtext - Optional secondary message
-   */
+
   const createBanner = useCallback((
     type: BannerType,
     teamId: 100 | 200,
@@ -86,9 +78,7 @@ export default function EventBanner({ events, timeMs }: Props) {
     setBanners(prev => [...prev, banner]);
   }, []);
 
-  /**
-   * EFFECT: Event Detection & Banner Creation
-   *
+  /*
    * This effect runs whenever timeMs changes (every frame during playback).
    * It detects when we cross event timestamps and creates appropriate banners.
    * 
@@ -108,8 +98,7 @@ export default function EventBanner({ events, timeMs }: Props) {
     
     if (newEvents.length === 0) return;
 
-    /**
-   * FUNCTION: processChampionKills
+  /*
    * Analyzes kill events to detect multi-kills
    * 
    * ALGORITHM:
@@ -149,10 +138,9 @@ export default function EventBanner({ events, timeMs }: Props) {
     });
   }
 
-  /**
-   * FUNCTION: processEpicMonsters
-   * Creates banners for dragon, baron, herald kills
-   */
+
+   // Creates banners for dragon, baron, herald kills
+
   function processEpicMonsters(newEvents: ReplayEvent[]) {
     const epics = newEvents.filter(e => e.kind === "ELITE_MONSTER_KILL");
     
@@ -170,10 +158,9 @@ export default function EventBanner({ events, timeMs }: Props) {
     });
   }
 
-  /**
-   * FUNCTION: processBuildings
-   * Creates banners for tower/inhibitor destruction
-   */
+  
+   //Creates banners for tower/inhibitor destruction
+
   function processBuildings(newEvents: ReplayEvent[]) {
     const buildings = newEvents.filter(e => e.kind === "BUILDING_KILL");
     
@@ -196,12 +183,10 @@ export default function EventBanner({ events, timeMs }: Props) {
   }, [timeMs, events, createBanner]);
 
 
-  /**
-   * EFFECT: Auto-cleanup expired banners
-   * 
-   * Removes banners after their lifetime expires.
-   * Runs periodically to check banner ages.
-   */
+  
+   // Removes banners after their lifetime expires.
+   // Runs periodically to check banner ages.
+   
   useEffect(() => {
     if (banners.length === 0) return;
 
@@ -285,17 +270,19 @@ export default function EventBanner({ events, timeMs }: Props) {
         transform: `translateY(${translateY}px) scale(${scale})`,
         opacity,
         transition: "transform 0.3s ease-out",
-        padding: "16px 32px",
+        padding: "8px 38px",
         background: `linear-gradient(135deg, ${color.bg} 0%, ${color.bg}dd 100%)`,
         border: `3px solid ${color.border}`,
         borderRadius: 12,
         boxShadow: `0 8px 32px ${color.glow}, 0 0 0 1px rgba(255,255,255,0.1) inset`,
         textAlign: "center",
-        minWidth: 280,
+        minWidth: 350,
       }}
     >
-      <div style={{ 
-        fontSize: 28, 
+      <div 
+      style={{ 
+        fontFamily: "Friz Quadrata, serif",
+        fontSize: 20, 
         fontWeight: 900, 
         color: "#fff",
         textShadow: "0 2px 8px rgba(0,0,0,0.8)",
@@ -304,13 +291,15 @@ export default function EventBanner({ events, timeMs }: Props) {
         {banner.text}
       </div>
       {banner.subtext && (
-        <div style={{ 
-          fontSize: 16, 
-          fontWeight: 600,
-          color: "#fef3c7",
-          marginTop: 4,
-          textShadow: "0 1px 4px rgba(0,0,0,0.6)",
-        }}>
+        <div 
+          style={{ 
+            fontFamily: "Friz Quadrata, serif",
+            fontSize: 12, 
+            fontWeight: 600,
+            color: "#fef3c7",
+            marginTop: 4,
+            textShadow: "0 1px 4px rgba(0,0,0,0.6)",
+          }}>
           {banner.subtext}
         </div>
       )}
