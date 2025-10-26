@@ -2,7 +2,7 @@
 
 Summoner Replay is a web app that replays completed **Summoner’s Rift** matches on a 2D map. It fetches match data from Riot’s public APIs and visualizes champion movement and key events to help players (and coaches) review games at a glance.
 
-> Status: **WIP / MVP in progress** — this README documents the intended architecture and setup so the team can build against it.
+> Status: **WIP / MVP in progress**
 
 ---
 
@@ -87,11 +87,11 @@ Visit http://localhost:5173
 
 ## 🎮 How to Use
 
-1.Open the app and go to Replay.
-2.Enter a Riot ID (e.g., Crocodice#431) or a specific Match ID (e.g., NA1_1234567890).
-3.Choose a match → click Play replay.
-4.Use play/pause, speed, and the scrubber to navigate the match.
-5.Watch blue/red “champion dots” traverse the Rift with team rails updating K/D/A and events.
+- 1.Open the app and go to Replay.
+- 2.Enter a Riot ID (e.g., Crocodice#431) or a specific Match ID (e.g., NA1_1234567890).
+- 3.Choose a match → click Play replay.
+- 4.Use play/pause, speed, and the scrubber to navigate the match.
+- 5.Watch blue/red “champion dots” traverse the Rift with team rails updating K/D/A and events.
 
 SCRIPTS
 
