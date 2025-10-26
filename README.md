@@ -88,7 +88,7 @@ Visit http://localhost:5173
 ## 🎮 How to Use
 
 - 1.Open the app and go to Replay.
-- 2.Enter a Riot ID (e.g., Crocodice#431) or a specific Match ID (e.g., NA1_1234567890).
+- 2.Enter a Riot ID (e.g., UserName#Tagline) or a specific Match ID (e.g., NA1_1234567890).
 - 3.Choose a match → click Play replay.
 - 4.Use play/pause, speed, and the scrubber to navigate the match.
 - 5.Watch blue/red “champion dots” traverse the Rift with team rails updating K/D/A and events.
@@ -107,3 +107,8 @@ ENVIRONMENT VARIABLES
 
 RIOT_TOKEN Your Riot API key (required)
 PORT Backend port (default 5050)
+
+⚖️ API & Legal
+- Respect Riot API rate limits and terms: https://developer.riotgames.com/
+- Do not expose your RIOT_TOKEN in the frontend. Keep it server-side.
+- This is a fan project; all League of Legends assets are © Riot Games.
