@@ -2,7 +2,7 @@
 
 Summoner Replay is a web app that replays completed **Summoner’s Rift** matches on a 2D map. It fetches match data from Riot’s public APIs and visualizes champion movement and key events to help players (and coaches) review games at a glance.
 
-> Status: **WIP / MVP in progress**
+> Status: **In progress**
 
 ---
 
@@ -22,14 +22,12 @@ Summoner Replay is a web app that replays completed **Summoner’s Rift** matche
 - **API:** Riot **Match-V5** & **Timeline-V5**
 - **Tooling:** ESLint/Prettier • GitHub Issues/Projects
 
-> If you start frontend-only, you can stub data or call a simple JSON mock; adding the Express proxy later is straightforward.
-
 ---
 
 ## 🗂️ Project Structure
 
 
-LoL-replay/
+Summoner-replay/
 │
 ├── server/ (Express backend)
 │ ├── src/
@@ -42,8 +40,8 @@ LoL-replay/
 ├── web/ (React + Vite frontend)
 │ ├── src/
 │ │ ├── pages/ Landing, Login, Replay
-│ │ ├── components/ MapCanvas, MatchFinder, TeamRail
-│ │ ├── lib/riotTimeline.ts timeline parsing + dead-reckoning
+│ │ ├── components/ MapCanvas, MatchFinder, TeamRail, MapOverlay, Objective HUD, EventBanner, EventBar
+│ │ ├── lib/gameState.ts live game state from timeline events, towerModel.ts tower positioning, riotTimeline.ts timeline parsing + dead-reckoning
 │ │ └── api.ts frontend fetch helpers
 │ └── package.json
 │
